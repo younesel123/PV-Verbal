@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulaire de Génération de PV</title>
+    <style>
+        /* Global styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            padding: 20px;
+        }
+
+        /* Container for the form */
+        .form-container {
+            width: 80%;
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-top: 20px;
+        }
+
+        /* Form labels and inputs */
+        label {
+            font-weight: bold;
+            margin-top: 10px;
+            display: block;
+        }
+
+        input[type="text"], input[type="number"], textarea, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0 20px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button {
+            background-color: #3498db;
+            color: white;
+            font-size: 16px;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        /* Section headers */
+        .section-header {
+            background-color: #ecf0f1;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        /* Section Recommandations */
+        .section-header-recommandations {
+            background-color: #2ecc71; /* Couleur verte */
+            color: white;
+            padding: 12px;
+            font-size: 18px;
+            border-radius: 8px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        label[for="recommandations"] {
+            font-weight: bold;
+            font-size: 16px;
+            display: block;
+            margin-top: 20px;
+            color: #34495e;
+        }
+
+        #recommandations {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #3498db;
+            border-radius: 8px;
+            background-color: #ecf0f1;
+            font-size: 16px;
+            color: #2c3e50;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            resize: none;
+        }
+
+        #recommandations option {
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        #recommandations:focus {
+            border-color: #2980b9;
+            background-color: #dfe6e9;
+            outline: none;
+        }
+
+        /* Additional styles for adding and removing options */
+        .add-remove-options {
+            margin-top: 20px;
+        }
+
+        .add-remove-options button {
+            background-color: #e67e22;
+            font-size: 16px;
+        }
+
+        .add-remove-options .remove-option-btn {
+            background-color: #c0392b;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Formulaire de Génération de Procès-Verbal</h1>
+    <div class="form-container">
+        <form action="/generate-pv" method="post">
+            <!-- Titre du PV -->
+            <label for="titre">Titre du PV :</label>
+            <input type="text" id="titre" name="titre" value="Procès-Verbal" readonly><br>
+
+            <!-- Marche N° -->
+            <label for="marche_num">Marche N° :</label>
+            <input type="text" id="marche_num" name="marche_num" required><br>
+
+            <!-- Objet -->
+            <label for="objet">Objet :</label>
+            <input type="text" id="objet" name="objet" required><br>
+
+            <!-- Sous-Objet -->
+            <label for="sous_objet">Sous-Objet :</label>
+            <input type="text" id="sous_objet" name="sous_objet" required><br>
+
+            <!-- Section des États Présents -->
+            <div class="section-header">États Présents</div>
+            <div id="etats">
+                <div class="etat">
+                    <label for="nom[]">Nom :</label>
+                    <input type="text" name="nom[]" required>
+                    <label for="activite[]">Activité :</label>
+                    <input type="text" name="activite[]" required>
+                    <label for="signature[]">Signature :</label>
+                    <input type="text" name="signature[]"><br><br>
+                </div>
+            </div>
+            <button type="button" class="add-state-btn" onclick="addEtat()">Ajouter un autre état</button><br><br>
+
+            <!-- Section Commission et Réception -->
+            <div class="section-header">Commission et Réception</div>
+            <label for="commission_reception">Phrase de Commission et Réception :</label>
+            <input type="text" id="commission_reception" name="commission_reception" value="Ce jour-même, une commission a été déplacée sur les lieux des travaux mentionnés en objet pour réceptionner le ferraillage." required><br><br>
+
+            <!-- Conformation -->
+            <div class="section-header" id="conformation-section">
+                <label for="conformation">Description du Conformation :</label>
+                <input type="text" id="conformation" name="conformation[]" list="conformation-options" required>
+                <datalist id="conformation-options">
+                    <option value="La conformation du ferraillage est conforme.">
+                    <option value="Le ferraillage est conforme avec les spécifications.">
+                    <option value="La conformation est conforme aux normes en vigueur.">
+                    <option value="La conformation ne nécessite pas de modification.">
+                </datalist>
+                <button type="button" class="remove-conformation-btn" onclick="removeConformation(this)">Supprimer</button><br><br>
+                
+                <!-- Ajouter des descriptions supplémentaires de Conformation -->
+                <div id="additional_conformations"></div>
+                <button type="button" onclick="addConformation()">Ajouter une autre description de Conformation</button><br><br>
+            </div>
+
+            <!-- Recommandations -->
+            <div class="section-header-recommandations">Recommandations</div>
+            <label for="recommandations">Recommandations :</label>
+            <select id="recommandations" name="recommandations[]" multiple required>
+                <option value="La réception doit être réalisée dans les plus brefs délais.">La réception doit être réalisée dans les plus brefs délais.</option>
+                <option value="Il est conseillé de procéder à une nouvelle vérification des documents.">Il est conseillé de procéder à une nouvelle vérification des documents.</option>
+                <option value="Une inspection supplémentaire est recommandée pour garantir la conformité.">Une inspection supplémentaire est recommandée pour garantir la conformité.</option>
+                <option value="Les travaux doivent être finalisés avant la prochaine réunion.">Les travaux doivent être finalisés avant la prochaine réunion.</option>
+                <option value="- Après la réception de ferraillage, l'entreprise doit être commencer le collage du béton.">- Après la réception de ferraillage, l'entreprise doit être commencer le collage du béton.</option>
+                <option value="- L'entreprise est inviter de rappeler un laboratoire pour prendre les enchantions du béton affin de commencer les essais nécessaires.">- L'entreprise est inviter de rappeler un laboratoire pour prendre les enchantions du béton affin de commencer les essais nécessaires.</option>
+                <option value="- L'entreprise est inviter de respecter les espacement des ferraillages.">- L'entreprise est inviter de respecter les espacement des ferraillages.</option>
+            </select>
+
+            <!-- Section Ajouter une nouvelle option -->
+            <div class="add-remove-options">
+                <label for="new_recommandation">Nouvelle recommandation :</label>
+                <input type="text" id="new_recommandation" name="new_recommandation" placeholder="Ajouter une nouvelle recommandation">
+                <button type="button" onclick="addNewRecommandation()">Ajouter</button><br><br>
+                <button type="button" onclick="removeSelectedRecommandations()">Supprimer la sélection</button>
+            </div>
+
+            <br><br>
+
+            <button type="submit">Générer le PV</button>
+        </form>
+    </div>
+
+    <script>
+        // Fonction pour ajouter de nouveaux champs d'états présents
+        function addEtat() {
+            var etatsDiv = document.getElementById("etats");
+            var newEtat = document.createElement("div");
+            newEtat.classList.add("etat");
+            newEtat.innerHTML = `
+                <label for="nom[]">Nom :</label>
+                <input type="text" name="nom[]" required>
+                <label for="activite[]">Activité :</label>
+                <input type="text" name="activite[]" required>
+                <label for="signature[]">Signature :</label>
+                <input type="text" name="signature[]"><br><br>
+            `;
+            etatsDiv.appendChild(newEtat);
+        }
+
+        // Fonction pour ajouter un autre champ de conformation
+        function addConformation() {
+            var additionalConformations = document.getElementById("additional_conformations");
+            var newConformation = document.createElement("div");
+            newConformation.innerHTML = `
+                <label for="conformation">Description du Conformation :</label>
+                <input type="text" id="conformation" name="conformation[]" list="conformation-options" required>
+                <button type="button" class="remove-conformation-btn" onclick="removeConformation(this)">Supprimer</button><br><br>
+            `;
+            additionalConformations.appendChild(newConformation);
+        }
+
+        // Fonction pour supprimer une conformation
+        function removeConformation(button) {
+            button.parentElement.remove();
+        }
+
+        // Fonction pour ajouter une nouvelle recommandation
+        function addNewRecommandation() {
+            var newRecommandation = document.getElementById("new_recommandation").value;
+            if (newRecommandation) {
+                var selectElement = document.getElementById("recommandations");
+                var newOption = document.createElement("option");
+                newOption.value = newRecommandation;
+                newOption.text = newRecommandation;
+                selectElement.appendChild(newOption);
+                document.getElementById("new_recommandation").value = ''; // Clear input field
+            }
+        }
+
+        // Fonction pour supprimer la sélection
+        function removeSelectedRecommandations() {
+            var selectElement = document.getElementById("recommandations");
+            for (var i = selectElement.selectedIndex; i >= 0; i--) {
+                selectElement.options[i].remove();
+            }
+        }
+    </script>
+</body>
+</html>
