@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
@@ -174,8 +174,47 @@
 
             <!-- Section Commission et Réception -->
             <div class="section-header">Commission et Réception</div>
+
+            <!-- Liste déroulante pour la phrase de Commission et Réception -->
             <label for="commission_reception">Phrase de Commission et Réception :</label>
-            <input type="text" id="commission_reception" name="commission_reception" value="Ce jour-même, une commission a été déplacée sur les lieux des travaux mentionnés en objet pour réceptionner le ferraillage." required><br><br>
+            <select id="commission_reception" name="commission_reception" required>
+                <option value="Ce jour-même, une commission a été déplacée sur les lieux des travaux mentionnés en objet pour réceptionner le ferraillage.">
+                    Ce jour-même, une commission a été déplacée sur les lieux des travaux mentionnés en objet pour réceptionner le ferraillage.
+                </option>
+                <option value="Une commission est intervenue pour vérifier la qualité des matériaux et la conformité des travaux.">
+                    Une commission est intervenue pour vérifier la qualité des matériaux et la conformité des travaux.
+                </option>
+                <option value="Une réception a eu lieu sur site, confirmant la conformité des travaux de ferraillage.">
+                    Une réception a eu lieu sur site, confirmant la conformité des travaux de ferraillage.
+                </option>
+                <option value="Une inspection approfondie a été effectuée pour valider la qualité du ferraillage.">
+                    Une inspection approfondie a été effectuée pour valider la qualité du ferraillage.
+                </option>
+                <option value="Autre (précisez ci-dessous)...">
+                    Autre (précisez ci-dessous)...
+                </option>
+            </select>
+
+            <!-- Champ pour saisir une phrase personnalisée -->
+            <div id="custom-commission" style="display:none;">
+                <label for="custom_commission_reception">Phrase personnalisée de Commission et Réception :</label>
+                <textarea id="custom_commission_reception" name="custom_commission_reception" placeholder="Saisissez votre propre phrase ici..."></textarea>
+            </div>
+
+            <!-- Script pour afficher le champ personnalisé si "Autre" est sélectionné -->
+            <script>
+                document.getElementById("commission_reception").addEventListener("change", function() {
+                    var selectedOption = this.value;
+                    var customSection = document.getElementById("custom-commission");
+                    
+                    // Si "Autre" est sélectionné, afficher le champ de texte pour une phrase personnalisée
+                    if (selectedOption === "Autre (précisez ci-dessous)...") {
+                        customSection.style.display = "block";
+                    } else {
+                        customSection.style.display = "none";
+                    }
+                });
+            </script>
 
             <!-- Conformation -->
             <div class="section-header" id="conformation-section">
