@@ -1,31 +1,5 @@
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 from flask import Flask, request, send_file, render_template
 from docx import Document
 from docx.shared import Pt
@@ -33,17 +7,25 @@ from io import BytesIO
 
 app = Flask(__name__)
 
+
 @app.route('/')
 def index():
     return render_template('form.html')
 
+
 @app.route('/generate-pv', methods=['POST'])
 def generate_pv():
+    # Récupération des données du formulaire
     titre = request.form['titre']
     marche_num = request.form['marche_num']
     objet = request.form['objet']
     sous_objet = request.form['sous_objet']  # Récupérer le texte du sous-objet
     commission_reception = request.form['commission_reception']
+
+    # Si "Autre" est sélectionné, récupérer la phrase personnalisée
+    if commission_reception == "Autre (précisez ci-dessous)...":
+        commission_reception = request.form.get('custom_commission_reception', '').strip()
+
     conformation = request.form.getlist('conformation[]')  # Récupérer toutes les descriptions de Conformation
     recommandations = request.form.getlist('recommandations[]')  # Récupérer les recommandations multiples
 
@@ -93,8 +75,10 @@ def generate_pv():
     doc.add_paragraph(f"{commission_reception} {sous_objet}.")
 
     # Ajouter la section Conformation
-    for description in conformation:
-        doc.add_paragraph(description)  # Ajouter chaque description de Conformation
+    if conformation:
+        doc.add_heading('Conformation', level=1)
+        for description in conformation:
+            doc.add_paragraph(description)  # Ajouter chaque description de Conformation
 
     # Ajouter les recommandations
     if recommandations:  # Vérifier si des recommandations ont été soumises
